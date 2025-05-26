@@ -1,12 +1,15 @@
 import './App.css';
 import { useQuery } from '@tanstack/react-query';
 import { useState, useEffect } from 'react';
+import Search from './components/Search';
 
 function App() {
   const [allLeagues, setAllLeagues] = useState<any[]>([]);
   const [selectedBadge, setSelectedBadge] = useState<string | null>(null);
   const [loadingBadgeId, setLoadingBadgeId] = useState<string | null>(null);
   const [selectedLeagueId, setSelectedLeagueId] = useState<string | null>(null);
+  const [searchInput, setSearchInput] = useState<string>('');
+  const [searchTerm, setSearchTerm] = useState<string>('');
 
   const { data, isLoading, isError } = useQuery<any>({
     queryKey: ['leagues'],
@@ -22,6 +25,17 @@ function App() {
       setAllLeagues(data.leagues);
     }
   }, [data]);
+
+  useEffect(() => {
+    if (searchTerm) {
+      const filteredLeagues = data?.leagues.filter((league: any) =>
+        league.strLeague.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setAllLeagues(filteredLeagues || []);
+    } else {
+      setAllLeagues(data?.leagues || []);
+    }
+  }, [searchTerm, data]);
 
   const handleLeagueClick = async (leagueId: string) => {
     setSelectedBadge(null);
@@ -52,11 +66,33 @@ function App() {
   if (isLoading) return <div className="text-center mt-10">Loading leagues...</div>;
   if (isError) return <div className="text-center mt-10 text-red-500">Failed to load leagues.</div>;
 
+  const handleInputChange = (searchInput: string) => {
+    setSearchInput(searchInput);
+  };
+
+  const handleSearch = () => {
+    setSearchTerm(searchInput.trim());
+  };
+
+  const handleClearSearch = () => {
+    setSearchInput('');
+    setSearchTerm('');
+  };
+
   return (
     <div className="flex min-h-screen bg-gray-100">
       
       <main className="flex-1 p-6">
         <h1 className="text-3xl font-bold text-gray-800 mb-6 text-center">Select a League</h1>
+
+        <Search
+        searchTerm={searchTerm}
+        searchInput={searchInput}
+        onInputChange={handleInputChange}
+        onSearch={handleSearch}
+        onClearSearch={handleClearSearch}
+        disabledSubmit={false}
+      />
   
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           {allLeagues.map((league) => (
@@ -70,7 +106,7 @@ function App() {
               )}
   
               {league.strLeague && (
-                <h2 className="text-lg font-semibold text-gray-800 mb-1">
+                <h2 className="text-lg font-semibold mb-1 bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">
                   {league.strLeague}
                 </h2>
               )}
