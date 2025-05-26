@@ -1,54 +1,44 @@
-# React + TypeScript + Vite
+# Sports League Selector
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Built in React + TypeScript.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🛠️ Tech Stack
 
-## Expanding the ESLint configuration
+- **React** (with Vite)
+- **TypeScript**
+- **Tailwind CSS** (utility-first styling)
+- **TanStack React Query** (data fetching & caching)
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+---
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+## 🔍 Technical Overview
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+**TypeScript** was used alongside React for its ability to catch errors at compile time, improve code maintainability, and support future scalability.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+**Tailwind CSS** was chosen for its fast development experience, clean utility classes, and modular approach that keeps styles close to the markup and easy to understand.
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+**TanStack React Query** simplifies data fetching and caching with minimal boilerplate, making it easier for others to work with and ideal for efficient API handling.
+
+---
+
+## 💡 Design Decisions
+
+- A **persistent sidebar** was implemented to keep the selected league badge always visible. This helps users maintain context — especially if they scroll down and interact with leagues below the fold.
+
+- On **mobile**, the sidebar is pinned to the bottom of the viewport so users can always see their selection without cluttering the main view.
+
+- The **search bar and category filter** are placed at the top of the page for immediate visibility. While placing them in the sidebar was an option, top placement felt more intuitive and visually balanced.
+
+- An **empty state message** is shown when no results match the current filters, ensuring clear user feedback.
+
+- A reusable **Button** component was created with `primary` and `secondary` variants. Primary buttons are used for main actions (e.g. "Search"), while secondary ones (e.g. "Clear") are styled with lower emphasis and are disabled when not usable.
+
+---
+
+## 📦 Getting Started
+
+```bash
+npm install
+npm run dev
