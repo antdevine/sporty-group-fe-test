@@ -2,6 +2,7 @@ import './App.css';
 import { useQuery } from '@tanstack/react-query';
 import { useState, useEffect } from 'react';
 import Search from './components/Search';
+import CategoryFilter from './components/CategoryFilter';
 
 function App() {
   const [allLeagues, setAllLeagues] = useState<any[]>([]);
@@ -10,6 +11,8 @@ function App() {
   const [selectedLeagueId, setSelectedLeagueId] = useState<string | null>(null);
   const [searchInput, setSearchInput] = useState<string>('');
   const [searchTerm, setSearchTerm] = useState<string>('');
+  const [allCategories, setAllCategories] = useState<any[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<string>('');
 
   const { data, isLoading, isError } = useQuery<any>({
     queryKey: ['leagues'],
@@ -22,20 +25,34 @@ function App() {
 
   useEffect(() => {
     if (data?.leagues) {
-      setAllLeagues(data.leagues);
+      const uniqueCategories = Array.from(
+        new Set(data.leagues.map((league: any) => league.strSport).filter(Boolean))
+      );
+      setAllCategories(uniqueCategories);
     }
   }, [data]);
+  
 
   useEffect(() => {
+    if (!data?.leagues) return;
+  
+    let filtered = [...data.leagues];
+  
     if (searchTerm) {
-      const filteredLeagues = data?.leagues.filter((league: any) =>
+      filtered = filtered.filter((league: any) =>
         league.strLeague.toLowerCase().includes(searchTerm.toLowerCase())
       );
-      setAllLeagues(filteredLeagues || []);
-    } else {
-      setAllLeagues(data?.leagues || []);
     }
-  }, [searchTerm, data]);
+  
+    if (selectedCategory) {
+      filtered = filtered.filter((league: any) =>
+        league.strSport === selectedCategory
+      );
+    }
+  
+    setAllLeagues(filtered);
+  }, [searchTerm, selectedCategory, data]);
+  
 
   const handleLeagueClick = async (leagueId: string) => {
     setSelectedBadge(null);
@@ -79,6 +96,10 @@ function App() {
     setSearchTerm('');
   };
 
+  const handleCategoryChange = (selectedCategory: string) => {
+    setSelectedCategory(selectedCategory);
+  };
+
   return (
     <div className="flex min-h-screen bg-gray-100">
       
@@ -92,6 +113,12 @@ function App() {
         onSearch={handleSearch}
         onClearSearch={handleClearSearch}
         disabledSubmit={false}
+      />
+
+      <CategoryFilter
+        allCategories={allCategories}
+        selectedCategory={selectedCategory}
+        onCategoryChange={handleCategoryChange}
       />
   
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
