@@ -1,5 +1,5 @@
-import React from 'react';
-import Button from './Button';
+import React from "react";
+import Button from "./Button";
 
 interface CategoryFilterProps {
   selectedCategory: string;
@@ -38,8 +38,8 @@ const CategoryFilter: React.FC<CategoryFilterProps> = ({
       <Button
         type="button"
         variant="secondary"
-        disabled={selectedCategory === ''}
-        onClick={() => onCategoryChange('')}
+        disabled={selectedCategory === ""}
+        onClick={() => onCategoryChange("")}
       >
         Reset Filter
       </Button>

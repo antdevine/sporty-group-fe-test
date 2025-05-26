@@ -1,5 +1,5 @@
-import React from 'react';
-import Button from './Button';
+import React from "react";
+import Button from "./Button";
 
 interface LeagueCardProps {
   league: any;
@@ -7,11 +7,13 @@ interface LeagueCardProps {
   onClick: (id: string) => void;
 }
 
-const LeagueCard: React.FC<LeagueCardProps> = ({ league, isLoadingBadge, onClick }) => {
+const LeagueCard: React.FC<LeagueCardProps> = ({
+  league,
+  isLoadingBadge,
+  onClick,
+}) => {
   return (
-    <div
-      className="relative bg-white rounded-xl p-4 pb-16 shadow hover:shadow-lg transition border hover:border-blue-500"
-    >
+    <div className="relative bg-white rounded-xl p-4 pb-16 shadow hover:shadow-lg transition border hover:border-blue-500">
       {league.strSport && (
         <p className="text-sm text-gray-500 mb-2">{league.strSport}</p>
       )}
@@ -23,11 +25,13 @@ const LeagueCard: React.FC<LeagueCardProps> = ({ league, isLoadingBadge, onClick
       )}
 
       {league.strLeagueAlternate && (
-        <p className="text-sm text-gray-400 italic">({league.strLeagueAlternate})</p>
+        <p className="text-sm text-gray-400 italic">
+          ({league.strLeagueAlternate})
+        </p>
       )}
 
-    <Button
-        className="mt-4 absolute bottom-2 left-2 right-2"
+      <Button
+        className="mt-4 absolute bottom-2 left-2 right-2 cursor-pointer"
         type="button"
         variant="primary"
         onClick={() => onClick(league.idLeague)}
