@@ -6,6 +6,7 @@ function App() {
   const [allLeagues, setAllLeagues] = useState<any[]>([]);
   const [selectedBadge, setSelectedBadge] = useState<string | null>(null);
   const [loadingBadgeId, setLoadingBadgeId] = useState<string | null>(null);
+  const [selectedLeagueId, setSelectedLeagueId] = useState<string | null>(null);
 
   const { data, isLoading, isError } = useQuery<any>({
     queryKey: ['leagues'],
@@ -23,8 +24,8 @@ function App() {
   }, [data]);
 
   const handleLeagueClick = async (leagueId: string) => {
-    console.log('Fetching badge for league:', leagueId);
     setSelectedBadge(null);
+    setSelectedLeagueId(leagueId); 
     setLoadingBadgeId(leagueId);
 
     try {
@@ -39,8 +40,6 @@ function App() {
 
       if (firstSeasonWithBadge?.strBadge) {
         setSelectedBadge(firstSeasonWithBadge.strBadge);
-      } else {
-        setSelectedBadge(null);
       }
     } catch (error) {
       console.error('Failed to fetch season badge:', error);
@@ -50,33 +49,73 @@ function App() {
     }
   };
 
-  if (isLoading) return <div>Loading leagues...</div>;
-  if (isError) return <div>Failed to load leagues.</div>;
+  if (isLoading) return <div className="text-center mt-10">Loading leagues...</div>;
+  if (isError) return <div className="text-center mt-10 text-red-500">Failed to load leagues.</div>;
 
   return (
-    <div className="App">
-      <h1>Leagues</h1>
-      <ul>
-        {allLeagues.map((league, index) => (
-          <li
-            key={index}
-            style={{ cursor: 'pointer', marginBottom: '8px' }}
-            onClick={() => handleLeagueClick(league.idLeague)}
-          >
-            {league.strLeague} ({league.strSport})
-            {loadingBadgeId === league.idLeague && ' 🔄'}
-          </li>
-        ))}
-      </ul>
-
-      {selectedBadge && (
-        <div>
-          <h2>Season Badge</h2>
-          <img src={selectedBadge} alt="Season Badge" style={{ height: '100px' }} />
+    <div className="flex min-h-screen bg-gray-100">
+      
+      <main className="flex-1 p-6">
+        <h1 className="text-3xl font-bold text-gray-800 mb-6 text-center">Select a League</h1>
+  
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+          {allLeagues.map((league) => (
+            <div
+              key={league.idLeague}
+              onClick={() => handleLeagueClick(league.idLeague)}
+              className="bg-white rounded-xl p-4 shadow hover:shadow-lg transition cursor-pointer border hover:border-blue-500"
+            >
+              {league.strSport && (
+                <p className="text-sm text-gray-500 mb-2">{league.strSport}</p>
+              )}
+  
+              {league.strLeague && (
+                <h2 className="text-lg font-semibold text-gray-800 mb-1">
+                  {league.strLeague}
+                </h2>
+              )}
+  
+              {league.strLeagueAlternate && (
+                <p className="text-sm text-gray-400 italic">
+                  ({league.strLeagueAlternate})
+                </p>
+              )}
+  
+              {loadingBadgeId === league.idLeague && (
+                <p className="text-sm text-blue-500 mt-2">Loading badge...</p>
+              )}
+            </div>
+          ))}
         </div>
-      )}
+      </main>
+  
+      <aside className="w-auto bg-white shadow-inner border-l border-gray-200 p-6 sticky top-0 h-screen">
+        <h2 className="text-xl font-semibold text-gray-700 mb-4">Selected League</h2>
+  
+        {selectedBadge ? (
+          <>
+            <img
+              src={selectedBadge}
+              alt="Season Badge"
+              className="h-24 mx-auto mb-4 transition-transform duration-300 hover:scale-105"
+            />
+            <p className="text-center text-gray-700 font-medium">
+  {
+    allLeagues.find((league) => league.idLeague === selectedLeagueId)?.strLeague ||
+    'Click a league to view badge'
+  }
+</p>
+
+          </>
+        ) : (
+          <div className="border-2 border-dashed border-gray-300 rounded-lg h-28 flex items-center justify-center mb-4 p-3">
+  <p className="text-gray-400 text-sm text-center">Click a league to view badge</p>
+</div>
+        )}
+      </aside>
     </div>
   );
+  
 }
 
 export default App;
